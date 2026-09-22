@@ -18,7 +18,7 @@ def render(md_path: str, html_path: str) -> str:
     from wechat_formatter import FormatTweaks, get_template, render_article
 
     template = get_template("科技风", "经典")  # 经典蓝 #2563eb
-    tweaks = FormatTweaks(fontSize=15, lineHeight=1.8, paragraphSpacing=18, imageRadius=6)
+    tweaks = FormatTweaks(fontSize=17, lineHeight=1.8, paragraphSpacing=18, imageRadius=6)
     body = render_article(md, template, tweaks)
 
     title = os.path.splitext(os.path.basename(md_path))[0]
