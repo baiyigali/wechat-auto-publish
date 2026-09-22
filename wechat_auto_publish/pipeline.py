@@ -46,12 +46,32 @@ def render(md_path: str, html_path: str) -> str:
     return html_path
 
 
+def _resolve_account(cfg: dict, account: str | None) -> dict:
+    """从 config 里取一个账号的凭据。
+
+    支持两种结构：
+    - 多账号：{"default": "程序员白大力", "accounts": {"程序员白大力": {...}, ...}}
+    - 单账号（向后兼容）：{"appid": ..., "secret": ..., "author": ...}
+    """
+    if "accounts" in cfg:
+        name = account or cfg.get("default")
+        if name not in cfg["accounts"]:
+            raise KeyError(
+                f"账号 '{name}' 不在 config 的 accounts 里；"
+                f"可选：{list(cfg['accounts'])}"
+            )
+        return cfg["accounts"][name]
+    # 旧的单账号扁平结构
+    return cfg
+
+
 def push_draft(
     md_path: str,
     cover_path: str,
     title: str,
     digest: str,
     config_path: str = "config.json",
+    account: str | None = None,
 ) -> str | None:
     """渲染 + 推草稿。无论成功/报错都只调用一次，绝不重试。"""
     html_path = os.path.splitext(md_path)[0] + ".html"
@@ -59,20 +79,21 @@ def push_draft(
 
     with open(config_path, "r", encoding="utf-8") as f:
         cfg = json.load(f)
+    cred = _resolve_account(cfg, account)
 
     from wechat_publish import WeChatAPIError, push_articles
 
     try:
         media_id = push_articles(
-            appid=cfg["appid"],
-            secret=cfg["secret"],
+            appid=cred["appid"],
+            secret=cred["secret"],
             articles=[{
                 "html_path": html_path,
                 "title": title,
                 "cover_path": cover_path,
                 "digest": digest,
             }],
-            author=cfg["author"],
+            author=cred["author"],
             open_comment=False,
             publish_now=False,  # 个人未认证号无 freepublish 发布权限，发表由人工完成
         )

@@ -21,10 +21,12 @@ def main() -> int:
     p.add_argument("title", help="文章标题")
     p.add_argument("digest", help="摘要（120 字内）")
     p.add_argument("--config", default="config.json", help="凭据路径，默认 ./config.json")
+    p.add_argument("--account", default=None,
+                   help="config.json 里 accounts 下的账号名；不传则用 default 账号")
     args = parser.parse_args()
 
     from .pipeline import push_draft
-    push_draft(args.md, args.cover, args.title, args.digest, args.config)
+    push_draft(args.md, args.cover, args.title, args.digest, args.config, args.account)
     return 0
 
 
