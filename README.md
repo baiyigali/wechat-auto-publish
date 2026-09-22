@@ -57,3 +57,33 @@ wechat-auto-publish/
 
 - 只存草稿，不群发。个人未认证号无 `freepublish/submit` 权限，发表动作在公众号后台手动点。
 - 发布命令只执行一次：微信接口可能"已成功但返回像失败"，重试会重复建草稿。
+
+## CI / 自动发布
+
+仓库自带 GitHub Actions（`.github/workflows/publish.yml`），与常见开源 Python 包一致：
+
+- **push 到 `main`** → 编译 sdist + wheel，自动发布到 **TestPyPI**（官方测试源，验证打包流程不污染正式版）；
+- **打 tag `v*`**（如 `v0.1.0`）→ 编译后发布到**正式 PyPI**；
+- 也支持在 Actions 页面手动触发（`workflow_dispatch`），只编译不发布。
+
+免密推送：在 PyPI / TestPyPI 后台把本仓库配置为 **Trusted Publisher（OIDC）**，workflow 里 `id-token: write` 自动换取临时凭据，不需要任何 `PYPI_API_TOKEN`。
+
+## 技术交流
+
+扫码添加微信，交流使用问题、定制与合作：
+
+<p align="center">
+  <img src="docs/images/wechat-contact-qr.jpg" alt="微信二维码" width="240" />
+</p>
+
+## 项目赞助
+
+本项目由微信公众号 **「程序员白大力」** 提供赞助，感谢支持：
+
+<p align="center">
+  <img src="docs/images/wechat-official-account-qr.png" alt="程序员白大力公众号二维码" width="240" />
+</p>
+
+## License
+
+MIT
