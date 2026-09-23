@@ -1,6 +1,46 @@
 # wechat-auto-publish
 
-公众号自动发布的**最外层流水线**。它自己不生成内容，只把三个上游组件串成一条命令：
+把写好的 Markdown 文章排版成公众号样式，一键推到微信公众号草稿箱。
+
+## 快速开始（Hello World）
+
+### 方式一：对话式自动生成并发布
+
+复制下面这段，粘贴到豆包新会话里：
+
+```text
+开启一个全新的会话，严格执行下面的指令。
+
+# 公众号自动发文 · 执行提示词
+
+1. **文章生成**：严格按内容生成提示词执行
+   - 内容生成提示词：https://github.com/baiyigali/opp_radar/blob/main/prompts/dev.md （可换成你自己的）
+   - 输出目录：~/articles/wechat/ （可换成你自己的，平铺不建子文件夹）
+
+2. **发布**：严格按发布流水线执行
+   - 发布流水线：https://github.com/baiyigali/wechat-auto-publish/blob/main/prompts/pipeline.md
+   - appid：（填你自己的公众号App ID）
+   - secret：（填你自己的公众号app secret）
+   - author：（填你自己的文章作者）
+
+3. **完成后报告**：文章标题、主名、发到哪个账号、草稿 media_id，
+   以及输出目录下本次生成的文件清单；遇到错误原样报告。
+```
+
+### 方式二：命令行手动发布已有文章
+
+```bash
+# 安装
+pip install wechat-auto-publish
+
+# 把现成的 .md + 封面推到草稿箱
+wechat-auto-publish draft "文章.md" "封面.png" "文章标题" \
+  --appid 你的AppID --secret 你的AppSecret --author 作者名
+# digest 摘要可省略，微信会自动生成
+```
+
+
+## 它做了什么
 
 ```
 opp-radar          →  生成文章（.md + 封面 .png）
@@ -43,10 +83,10 @@ pip install -e .
 ### 命令行：把一篇已写好的文章推到草稿箱
 
 ```bash
-wechat-auto-publish draft "文章.md" "封面.png" "标题" "120字内摘要"
+wechat-auto-publish draft "文章.md" "封面.png" "标题" [摘要]
 ```
 
-这条命令只跑一次，绝不重试，避免重复建草稿。
+摘要可省略，微信会自动生成。
 
 ### 编排：生成 + 发布一条龙
 
@@ -65,7 +105,7 @@ wechat-auto-publish/
 ## 说明
 
 - 只存草稿，不群发。个人未认证号无 `freepublish/submit` 权限，发表动作在公众号后台手动点。
-- 发布命令只执行一次：微信接口可能"已成功但返回像失败"，重试会重复建草稿。
+- 如遇报错，如实报告错误信息。
 
 ## CI / 自动发布
 

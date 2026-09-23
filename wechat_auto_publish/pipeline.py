@@ -72,14 +72,28 @@ def push_draft(
     digest: str,
     config_path: str = "config.json",
     account: str | None = None,
+    appid: str | None = None,
+    secret: str | None = None,
+    author: str | None = None,
 ) -> str | None:
-    """渲染 + 推草稿。无论成功/报错都只调用一次，绝不重试。"""
+    """渲染 + 推草稿。
+
+    凭据来源优先级：直接传入的 appid/secret/author > config 文件里指定账号。
+    """
+    # 摘要超长就截到 120 字，不报错
+    if digest:
+        digest = digest.strip()[:120]
+
     html_path = os.path.splitext(md_path)[0] + ".html"
     render(md_path, html_path)
 
-    with open(config_path, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
-    cred = _resolve_account(cfg, account)
+    # 直接传了凭据就用，否则读配置文件
+    if appid and secret:
+        cred = {"appid": appid, "secret": secret, "author": author or ""}
+    else:
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        cred = _resolve_account(cfg, account)
 
     from wechat_publish import WeChatAPIError, push_articles
 
