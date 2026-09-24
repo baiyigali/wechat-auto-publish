@@ -88,6 +88,30 @@ wechat-auto-publish draft "文章.md" "封面.png" "标题" [摘要]
 
 摘要可省略，微信会自动生成。
 
+### 命令行：多图文（一条草稿最多 8 篇）
+
+写一个 JSON 清单 `manifest.json`：
+
+```json
+{
+  "articles": [
+    {"md": "文章A.md", "cover": "文章A.png", "title": "标题A", "digest": "摘要A（可选，120字内）"},
+    {"md": "文章B.md", "cover": "文章B.png", "title": "标题B"}
+  ]
+}
+```
+
+然后一条命令推送：
+
+```bash
+wechat-auto-publish draft-multi manifest.json \
+  --appid 你的AppID --secret 你的AppSecret --author 作者名
+```
+
+- 第一篇为头条封面文章；上限 8 篇；title ≤32 字、digest ≤120 字、author ≤16 字
+- 每篇的 `.md` 会先渲染成同款公众号样式 HTML（与 `draft` 一致），无需手动渲染
+- `title` 可省略，默认取 md 文件名；凭据参数与 `draft` 完全一致（或走 `config.json`）
+
 ### 编排：生成 + 发布一条龙
 
 给 AI agent 说："按 `prompts/pipeline.md` 跑一期"。它会先读"生成"那一环的领域提示词产出文章，再调用本仓库推到草稿箱。生成环节以 [opp-radar](https://github.com/baiyigali/opp_radar)（机会雷达）为例，可换成任意自己的生成流程。

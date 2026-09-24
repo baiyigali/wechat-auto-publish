@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3] - 2026-09-25
+
+- 新增 `draft-multi` 子命令：JSON 清单驱动，一次最多 8 篇文章合成一个多图文草稿
+- 凭据解析逻辑重构为 `_resolve_credentials`，`draft` 与 `draft-multi` 行为一致
+- README 增加 draft-multi 用法与 manifest 结构说明
+
 ## [1.0.2] - 2026-09-23
 
 - 支持 `--appid / --secret / --author` 直接传凭据，单发无需配置文件
