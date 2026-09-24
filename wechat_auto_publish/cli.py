@@ -10,7 +10,7 @@ import argparse
 import sys
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="wechat-auto-publish",
         description="把已写好的 md 文章渲染并推到公众号草稿箱（支持单篇与多图文）。",
@@ -28,7 +28,7 @@ def main() -> int:
     p.add_argument("manifest", help="JSON 清单路径，结构见 README：{\"articles\": [{md, cover, title, digest?}, ...]}")
     _add_credential_args(p)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     from .pipeline import push_draft, push_draft_multi
     if args.cmd == "draft":

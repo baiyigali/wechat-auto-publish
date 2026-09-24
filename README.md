@@ -74,6 +74,26 @@ pip install -e .
 
 依赖三个上游包（见 `pyproject.toml`）。
 
+## 测试
+
+测试套件在 `tests/`，全部为本地逻辑测试（清单解析、渲染、凭据解析、参数校验），**不触网、不调用微信 API**：
+
+```bash
+pip install -e . pytest
+pytest tests/ -v
+```
+
+覆盖范围：
+
+| 模块 | 覆盖内容 |
+|---|---|
+| `render` | md → 内联样式 HTML 生成 |
+| `_resolve_credentials` | 直传凭据优先级 / 单账号 / 多账号 / `--author` 覆盖 |
+| `push_draft_multi` | 8 篇上限、空清单、缺 `articles` 键、digest 截断、title 默认取文件名 |
+| CLI | `draft` / `draft-multi` 参数解析与分发 |
+
+CI 在 GitHub Actions 上跑（`.github/workflows/ci.yml`），Python 3.10–3.13 矩阵。
+
 ## 配置
 
 复制 `config.example.json` 为 `config.json`，填入公众号凭据。支持多账号：`default` 指定默认号，`accounts` 下可放多个公众号；发指定号时命令加 `--account <账号名>`。`config.json` 已 gitignore，不进版本库。
