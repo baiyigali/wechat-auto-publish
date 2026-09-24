@@ -37,6 +37,7 @@ pip install wechat-auto-publish
 wechat-auto-publish draft "文章.md" "封面.png" "文章标题" \
   --appid 你的AppID --secret 你的AppSecret --author 作者名
 # digest 摘要可省略，微信会自动生成
+# 可选渲染样式：--style 科技风 --color 经典（6 风格 × 12 配色，见下方"渲染样式"）
 ```
 
 
@@ -51,7 +52,7 @@ wechat-publish     →  HTML + 封面推到公众号草稿箱
 | 组件 | 仓库 / 包 | 职责 |
 |---|---|---|
 | 生成 | [opp_radar](https://github.com/baiyigali/opp_radar) | 机会雷达，按领域提示词产出渠道无关的文章 |
-| 排版 | [wechat-formatter](https://github.com/baiyigali/wechat-formatter) | Markdown → 科技风经典蓝 HTML |
+| 排版 | [wechat-formatter](https://github.com/baiyigali/wechat-formatter) | Markdown → 公众号内联样式 HTML（6 风格 × 12 配色 = 72 模板） |
 | 发布 | [wechat-publish](https://github.com/baiyigali/wechat-publish) | 草稿箱接口，图片自动转存微信 CDN |
 
 换领域、换排版主题、换发布渠道时，只在这一层换组件，不改上游。
@@ -87,10 +88,11 @@ pytest tests/ -v
 
 | 模块 | 覆盖内容 |
 |---|---|
-| `render` | md → 内联样式 HTML 生成 |
+| `render` | md → 内联样式 HTML 生成、风格/配色参数渲染差异、非法值报错 |
+| 样式归一化 | 中文风格名 / 英文 id / 省略"风"字 / 12 配色合法性校验 |
 | `_resolve_credentials` | 直传凭据优先级 / 单账号 / 多账号 / `--author` 覆盖 |
-| `push_draft_multi` | 8 篇上限、空清单、缺 `articles` 键、digest 截断、title 默认取文件名 |
-| CLI | `draft` / `draft-multi` 参数解析与分发 |
+| `push_draft` / `push_draft_multi` | 8 篇上限、空清单、缺 `articles` 键、digest 截断、title 默认取文件名、style/color 转发与 manifest 逐篇覆盖 |
+| CLI | `draft` / `draft-multi` / `styles` 参数解析、分发与默认值 |
 
 CI 在 GitHub Actions 上跑（`.github/workflows/publish.yml`）：push main / PR 先跑 Python 3.10–3.13 测试矩阵，通过后才构建发布（TestPyPI / 正式 PyPI）。
 
@@ -103,19 +105,37 @@ CI 在 GitHub Actions 上跑（`.github/workflows/publish.yml`）：push main / 
 ### 命令行：把一篇已写好的文章推到草稿箱
 
 ```bash
-wechat-auto-publish draft "文章.md" "封面.png" "标题" [摘要]
+wechat-auto-publish draft "文章.md" "封面.png" "标题" [摘要] \
+  --style 科技风 --color 经典
 ```
 
-摘要可省略，微信会自动生成。
+摘要可省略，微信会自动生成。`--style` / `--color` 可省略，默认 科技风/经典。
+
+### 渲染样式（--style / --color）
+
+排版层基于 [wechat-formatter](https://github.com/baiyigali/wechat-formatter) 的模板体系，**风格名称 + 配色名称**两个参数控制全部 72 个模板：
+
+| 参数 | 可选值 |
+|---|---|
+| `--style` | 极简风 / 商务风 / 文艺风 / 科技风 / 节庆风 / 新粗野风（中文或英文 id：minimalist / business / literary / tech / festive / neo-brutalism 均可） |
+| `--color` | 经典 / 雅致 / 先锋 / 深邃 / 晨光 / 星穹 / 暖阳 / 暮色 / 清泉 / 破晓 / 璀璨 / 幽蓝 |
+
+随时用 `styles` 子命令查看全部可用值：
+
+```bash
+wechat-auto-publish styles
+```
+
+非法的风格/配色名会直接报错并列出可选项，不会渲染出错误样式。
 
 ### 命令行：多图文（一条草稿最多 8 篇）
 
-写一个 JSON 清单 `manifest.json`：
+写一个 JSON 清单 `manifest.json`（每篇可用 `"style"` / `"color"` 覆盖全局样式）：
 
 ```json
 {
   "articles": [
-    {"md": "文章A.md", "cover": "文章A.png", "title": "标题A", "digest": "摘要A（可选，120字内）"},
+    {"md": "文章A.md", "cover": "文章A.png", "title": "标题A", "digest": "摘要A（可选，120字内）", "style": "商务风", "color": "暖阳"},
     {"md": "文章B.md", "cover": "文章B.png", "title": "标题B"}
   ]
 }
@@ -125,11 +145,12 @@ wechat-auto-publish draft "文章.md" "封面.png" "标题" [摘要]
 
 ```bash
 wechat-auto-publish draft-multi manifest.json \
-  --appid 你的AppID --secret 你的AppSecret --author 作者名
+  --appid 你的AppID --secret 你的AppSecret --author 作者名 \
+  --style 科技风 --color 经典
 ```
 
 - 第一篇为头条封面文章；上限 8 篇；title ≤32 字、digest ≤120 字、author ≤16 字
-- 每篇的 `.md` 会先渲染成同款公众号样式 HTML（与 `draft` 一致），无需手动渲染
+- 每篇的 `.md` 会先渲染成公众号样式 HTML（`--style`/`--color` 为全局默认，manifest 单篇键可覆盖），无需手动渲染
 - `title` 可省略，默认取 md 文件名；凭据参数与 `draft` 完全一致（或走 `config.json`）
 
 ### 编排：生成 + 发布一条龙
