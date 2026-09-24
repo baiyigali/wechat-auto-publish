@@ -92,7 +92,7 @@ pytest tests/ -v
 | `push_draft_multi` | 8 篇上限、空清单、缺 `articles` 键、digest 截断、title 默认取文件名 |
 | CLI | `draft` / `draft-multi` 参数解析与分发 |
 
-CI 在 GitHub Actions 上跑（`.github/workflows/ci.yml`），Python 3.10–3.13 矩阵。
+CI 在 GitHub Actions 上跑（`.github/workflows/publish.yml`）：push main / PR 先跑 Python 3.10–3.13 测试矩阵，通过后才构建发布（TestPyPI / 正式 PyPI）。
 
 ## 配置
 

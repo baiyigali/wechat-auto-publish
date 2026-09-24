@@ -7,7 +7,7 @@
 - README 增加 draft-multi 用法与 manifest 结构说明
 - 拷入 AGENTS.md（AI 编程助手协作硬性规则）
 - 新增 tests/ 测试套件（18 个用例：渲染/凭据/多图文校验/CLI 分发，不触网）
-- 新增 GitHub Actions CI（Python 3.10-3.13 矩阵）
+- 测试整合进 publish.yml：test job（Python 3.10-3.13 矩阵）前置，测试通过才构建发布
 
 ## [1.0.2] - 2026-09-23
 
