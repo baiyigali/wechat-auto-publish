@@ -9,5 +9,5 @@ dist/
 venv/
 .DS_Store
 .idea/
-
+*.json
 .pytest_tmp/

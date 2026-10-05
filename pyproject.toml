@@ -21,7 +21,8 @@ classifiers = [
 # 上游三个组件；按需替换成你自己的 fork / 版本
 dependencies = [
     "wechat-formatter",
-    "wechat-publish",
+    # >=1.0.1：正文图片支持本地相对路径转存微信 CDN（v1.0.0 只支持远程 URL）
+    "wechat-publish>=1.0.1",
     # opp-radar 是提示词仓库，尚未发 PyPI 时直接引用 GitHub：
     # "opp-radar @ git+https://github.com/baiyigali/opp_radar.git",
 ]
