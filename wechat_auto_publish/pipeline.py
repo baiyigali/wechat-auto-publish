@@ -80,9 +80,8 @@ def render(md_path: str, html_path: str, style: str = DEFAULT_STYLE, color: str 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <style>
-  body {{ margin:0; background:#f2f3f5; padding:24px 0; }}
-  .wechat-article {{ max-width:677px; margin:0 auto; background:#fff;
-                     padding:24px 16px; box-sizing:border-box; }}
+  body {{ margin:0; }}
+  .wechat-article {{ max-width:677px; margin:0 auto; }}
 </style>
 </head>
 <body>
