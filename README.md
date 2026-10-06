@@ -13,8 +13,7 @@
 
 # 公众号自动发文 · 执行提示词
 
-1. **文章生成**：严格按内容生成提示词执行
-   - 内容生成提示词：https://github.com/baiyigali/opp_radar/blob/main/prompts/dev.md （可换成你自己的）
+1. **文章生成**：按你自己的内容生成流程产出 .md 与封面图
    - 输出目录：~/articles/wechat/ （可换成你自己的，平铺不建子文件夹）
 
 2. **发布**：严格按发布流水线执行
@@ -23,7 +22,7 @@
    - secret：（填你自己的公众号app secret）
    - author：（填你自己的文章作者）
 
-3. **完成后报告**：文章标题、主名、发到哪个账号、草稿 media_id，
+3. **完成后报告**：文章标题、文件名（不含扩展名）、发到哪个账号、草稿 media_id，
    以及输出目录下本次生成的文件清单；遇到错误原样报告。
 ```
 
@@ -44,18 +43,17 @@ wechat-auto-publish draft "文章.md" "封面.png" "文章标题" \
 ## 它做了什么
 
 ```
-opp-radar          →  生成文章（.md + 封面 .png）
+你的生成流程        →  生成文章（.md + 封面 .png）
 wechat-formatter   →  .md 渲染成公众号内联样式 HTML
 wechat-publish     →  HTML + 封面推到公众号草稿箱
 ```
 
 | 组件 | 仓库 / 包 | 职责 |
 |---|---|---|
-| 生成 | [opp_radar](https://github.com/baiyigali/opp_radar) | 机会雷达，按领域提示词产出渠道无关的文章 |
 | 排版 | [wechat-formatter](https://github.com/baiyigali/wechat-formatter) | Markdown → 公众号内联样式 HTML（6 风格 × 12 配色 = 72 模板） |
 | 发布 | [wechat-publish](https://github.com/baiyigali/wechat-publish) | 草稿箱接口，图片自动转存微信 CDN |
 
-换领域、换排版主题、换发布渠道时，只在这一层换组件，不改上游。
+换排版主题、换发布渠道时，只在这一层换组件，不改上游。
 
 ## 安装
 
@@ -73,7 +71,7 @@ cd wechat-auto-publish
 pip install -e .
 ```
 
-依赖三个上游包（见 `pyproject.toml`）。
+依赖两个上游包（见 `pyproject.toml`）。
 
 ## 测试
 
@@ -155,7 +153,7 @@ wechat-auto-publish draft-multi manifest.json \
 
 ### 编排：生成 + 发布一条龙
 
-给 AI agent 说："按 `prompts/pipeline.md` 跑一期"。它会先读"生成"那一环的领域提示词产出文章，再调用本仓库推到草稿箱。生成环节以 [opp-radar](https://github.com/baiyigali/opp_radar)（机会雷达）为例，可换成任意自己的生成流程。
+给 AI agent 说："按 `prompts/pipeline.md` 跑一期"。它会先执行你自己的文章生成流程产出文章，再调用本仓库推到草稿箱。
 
 ## 目录
 
@@ -184,7 +182,6 @@ wechat-auto-publish/
 
 ## 相关项目
 
-- [opp_radar](https://github.com/baiyigali/opp_radar)：机会雷达，按领域提示词自动生成文章内容
 - [wechat-formatter](https://github.com/baiyigali/wechat-formatter)：Markdown → 公众号内联样式 HTML（科技风/经典蓝）
 - [wechat-publish](https://github.com/baiyigali/wechat-publish)：公众号草稿箱/群发接口，图片自动转存微信 CDN
 - [legal_prompts](https://github.com/baiyigali/legal_prompts)：法律领域提示词合集

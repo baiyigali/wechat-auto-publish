@@ -18,7 +18,7 @@ pip install wechat-auto-publish
 - **文章 Markdown**：`文章.md`
 - **封面 PNG**：`封面.png`
 
-外加两个凭据：`appid`、`secret`；作者名 `author` 可选。
+外加公众号凭据：`appid`、`secret`；作者名 `author` 可选。
 
 ### 3. 运行
 
