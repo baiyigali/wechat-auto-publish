@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5] - 2026-10-07
+
+- 渲染输出去掉白色/浅灰容器（`.wechat-article` 的白底与内边距、`body` 的灰底），深色模板不再被人为包出白圈
+- README / `pyproject.toml` / 包 docstring 移除 opp-radar 相关内容，依赖数量修正为两个（wechat-formatter、wechat-publish）
+- README 报告项"主名"改为"文件名（不含扩展名）"
+- `__version__` 同步为 1.0.5（此前滞后于 pyproject）
+
 ## [1.0.4] - 2026-09-25
 
 - 渲染样式开放到命令行：`draft` / `draft-multi` 新增 `--style`（6 风格，中英文均可）与 `--color`（12 配色）参数，共 72 个模板
