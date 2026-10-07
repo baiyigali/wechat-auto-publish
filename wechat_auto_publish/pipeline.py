@@ -69,7 +69,8 @@ def render(md_path: str, html_path: str, style: str = DEFAULT_STYLE, color: str 
     zh_style = _normalize_style(style)
     zh_color = _normalize_color(color)
     template = get_template(zh_style, zh_color)
-    tweaks = FormatTweaks(fontSize=17, lineHeight=1.8, paragraphSpacing=18, imageRadius=6)
+    tweaks = FormatTweaks(fontSize=17, lineHeight=1.8, paragraphSpacing=18, imageRadius=6, pagePaddingTop=10,
+                          pagePaddingBottom=10, pagePaddingRight=10, pagePaddingLeft=10)
     body = render_article(md, template, tweaks)
 
     title = os.path.splitext(os.path.basename(md_path))[0]
@@ -244,7 +245,7 @@ def push_draft_multi(
             secret=cred["secret"],
             articles=articles,
             author=cred["author"],
-            open_comment=False,
+            open_comment=True,
             publish_now=False,  # 个人未认证号无 freepublish 发布权限，发表由人工完成
         )
         print("DRAFT_MEDIA_ID:", media_id)
